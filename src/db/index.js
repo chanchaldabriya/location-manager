@@ -15,9 +15,9 @@ const upsertLocation = async (locationObj) => await db[LOCATIONS_STORE].put(loca
 
 const deleteLocation = async (id) => await db[LOCATIONS_STORE].delete(id);
 
-const getLocation = async (id) => await db[LOCATIONS_STORE].get('id').equals(id);
+const getLocation = async (id) => await db.table(LOCATIONS_STORE).get(id);
 
-const getAllLocations = async () => await db[LOCATIONS_STORE].toArray();
+const getAllLocations = async () => await db.table(LOCATIONS_STORE).toArray();
 
 export { upsertLocation, deleteLocation, getLocation, getAllLocations };
 export default db;

@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
     titlebar: {
@@ -24,7 +25,9 @@ const useStyles = makeStyles({
 });
 
 export default ({ title }) => {
-  const classes = useStyles();
+  const classes = useStyles(),
+        history = useHistory();
+
   return (
     <div className={classes.titlebar}>
       <span className={classes.title}>{title || "Title"}</span>
@@ -33,6 +36,7 @@ export default ({ title }) => {
         color="primary"
         variant="contained"
         size="small"
+        onClick={() => history.push('/location/add')}
       >
         + Add Location
       </Button>
