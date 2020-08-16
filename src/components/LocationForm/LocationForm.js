@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import useFormField from "../../hooks/useFormField";
-import { upsertLocation } from "../../db";
+import { upsertLocation, getLocation } from "../../db";
 
 const useStyles = makeStyles({
   flex: {
@@ -38,7 +38,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default ({ history }) => {
+export default ({ history, match }) => {
   // Styles
   const {
     flex,
@@ -50,6 +50,10 @@ export default ({ history }) => {
     form,
     card,
   } = useStyles();
+
+  // Load Location item acc. to Id passed
+  let locationId = parseInt(match.params.id);
+  locationId = locationId ? locationId : -1; // Avoid NaN
 
   /* Form fields' state */
   const [name, setName, resetName] = useFormField(""),
@@ -63,6 +67,36 @@ export default ({ history }) => {
     [timezone, setTimezone, resetTimezone] = useFormField(""),
     [facility, setFacility, resetFacility] = useFormField(""),
     [appointment, setAppointment, resetAppointment] = useFormField("");
+
+  // Load location details acc. to Id in Url parameter
+  useEffect(() => {
+    debugger;
+    getLocation(locationId).then((item) => {
+        const { name, address1, address2, suite, city, state, zip, phone, timezone, facility, appointment } = item;
+
+        // pass as wrapper of event object
+        const asEventObj = (val) => ({
+            target: { 
+                value: val
+            }
+        });
+
+        // Set all fetched values to state
+        setName(asEventObj(name));
+        setAddress1(asEventObj(address1));
+        setAddress2(asEventObj(address2));
+        setSuite(asEventObj(suite));
+        setCity(asEventObj(city));
+        setState(asEventObj(state));
+        setZip(asEventObj(zip));
+        setPhone(asEventObj(phone));
+        setTimezone(asEventObj(timezone));
+        setFacility(asEventObj(facility));
+        setAppointment(asEventObj(appointment));
+    }).catch(error => {
+        console.error("Error loading location from DB with ID: " + locationId, error);
+    })
+  }, [locationId]);
 
   const [status, setStatus] = useState({ loading: false, error: false });
 
@@ -83,19 +117,26 @@ export default ({ history }) => {
 
   const save = () => {
     setStatus({ loading: true, error: false });
-    upsertLocation({
-      name,
-      address1,
-      address2,
-      suite,
-      city,
-      state,
-      zip,
-      phone,
-      timezone,
-      facility,
-      appointment,
-    })
+
+    let objToSave = {
+        name,
+        address1,
+        address2,
+        suite,
+        city,
+        state,
+        zip,
+        phone,
+        timezone,
+        facility,
+        appointment,
+    };
+    
+    // In case of edit, id also needs to be passed
+    if(locationId > 0)
+        objToSave.id = locationId;
+
+    upsertLocation(objToSave)
       .then((resp) => {
         console.log(resp);
         setStatus({ loading: false, error: false });
@@ -215,7 +256,12 @@ export default ({ history }) => {
 
         {/* Buttons */}
         <div className={`${flex} ${btnContainer}`}>
-          <Button color="secondary" variant="contained" classes={{ root: btn }} onClick={() => history.push("/")}>
+          <Button
+            color="secondary"
+            variant="contained"
+            classes={{ root: btn }}
+            onClick={() => history.push("/")}
+          >
             Cancel
           </Button>
           <Button

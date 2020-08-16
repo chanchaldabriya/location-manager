@@ -4,6 +4,7 @@ export default (initialVal) => {
     const [val, setVal] = useState(initialVal);
 
     const setFieldValue = (event) => {
+        debugger;
         setVal(event.target.value);
     };
 

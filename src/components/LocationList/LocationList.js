@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   /* /ListItem styling*/
 });
 
-export default () => {
+export default ({ history }) => {
   const classes = useStyles();
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState({ loading: false, error: false });
@@ -43,7 +43,9 @@ export default () => {
       });
   };
 
-  const editItem = (id) => {};
+  const editItem = (id) => {
+    history.push(`/location/${id}`);
+  };
 
   return !items || isEmpty ? (
     <span style={{ color: "#888" }}>Empty</span>
@@ -53,7 +55,7 @@ export default () => {
       {items.map((item, index) => (
         <LocationListItem
           key={item.id}
-          index={index+1}
+          index={index + 1}
           deleteItem={deleteItem}
           editItem={editItem}
           {...item}
