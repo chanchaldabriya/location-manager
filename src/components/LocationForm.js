@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import MuiPhoneNumber from "material-ui-phone-number";
 import useFormField from "../hooks/useFormField";
 import { upsertLocation, getLocation } from "../db";
 import WeekTimePicker from "./WeekTimePicker";
@@ -65,7 +66,7 @@ export default ({ history, match }) => {
     [city, setCity, resetCity] = useFormField(""),
     [state, setState, resetState] = useFormField(""),
     [zip, setZip, resetZip] = useFormField(""),
-    [phone, setPhone, resetPhone] = useFormField(""),
+    [phone, setPhone] = useState(""),
     [timezone, setTimezone, resetTimezone] = useFormField(""),
     [facility, setFacility, resetFacility] = useFormField(""),
     [appointment, setAppointment, resetAppointment] = useFormField("");
@@ -98,10 +99,12 @@ export default ({ history, match }) => {
     setCity(asEventObj(city));
     setState(asEventObj(state));
     setZip(asEventObj(zip));
-    setPhone(asEventObj(phone));
     setTimezone(asEventObj(timezone));
     setFacility(asEventObj(facility));
     setAppointment(asEventObj(appointment));
+
+    // Not as event
+    setPhone(phone);
   };
 
   // Load location details acc. to Id in Url parameter
@@ -132,10 +135,12 @@ export default ({ history, match }) => {
     resetCity();
     resetState();
     resetZip();
-    resetPhone();
     resetTimezone();
     resetFacility();
     resetAppointment();
+
+    // Explicitly re-setting phone
+    setPhone("");
   };
 
   const save = () => {
@@ -245,9 +250,10 @@ export default ({ history, match }) => {
               value={zip}
               onChange={setZip}
             />
-            <TextField
+            <MuiPhoneNumber 
+              defaultCountry={'us'}
               label="Phone Number"
-              classes={{ root: textField }}
+              className={textField}
               value={phone}
               onChange={setPhone}
             />
