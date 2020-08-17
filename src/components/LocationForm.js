@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import useFormField from "../../hooks/useFormField";
-import { upsertLocation, getLocation } from "../../db";
-import WeekTimePicker from "../WeekTimePicker/WeekTimePicker";
+import useFormField from "../hooks/useFormField";
+import { upsertLocation, getLocation } from "../db";
+import WeekTimePicker from "./WeekTimePicker";
 
 const useStyles = makeStyles({
   flex: {

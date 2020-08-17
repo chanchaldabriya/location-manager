@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { List, TablePagination } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import LocationListItem from "../LocationListItem/LocationListItem";
-import { deleteLocation, getPagedLocations, getAllLocations } from "../../db";
+import LocationListItem from "./LocationListItem";
+import { deleteLocation, getPagedLocations, getAllLocations } from "../db";
 
 const useStyles = makeStyles({
   /* ListItem styling*/
