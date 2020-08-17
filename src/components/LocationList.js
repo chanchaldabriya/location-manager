@@ -3,6 +3,7 @@ import { List, TablePagination } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import LocationListItem from "./LocationListItem";
 import { deleteLocation, getPagedLocations, getAllLocations } from "../db";
+import EmptyListPlaceholder from "./EmptyListPlaceholder";
 
 const useStyles = makeStyles({
   /* ListItem styling*/
@@ -28,6 +29,7 @@ export default ({ history }) => {
   const [page, setPage] = useState(0),
     [itemsPerPage, setItemsPerPage] = useState(5);
 
+  // get total items at the start for pagination component
   useEffect(() => {
     getAllLocations().then(items => {
       items && setTotalItems(items.length);
@@ -67,7 +69,7 @@ export default ({ history }) => {
   };
 
   return !items || isEmpty ? (
-    <span style={{ color: "#888" }}>Empty</span>
+    <EmptyListPlaceholder />
   ) : (
     <List classes={{ root: classes.list }}>
       <LocationListItem isHeading isContainer={false} />
