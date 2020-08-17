@@ -29,6 +29,7 @@ const useStyles = makeStyles({
   heading: {
     color: "#000",
     fontWeight: "bold",
+    fontSize: '0.9rem'
   },
   flex1: {
     flex: 1,

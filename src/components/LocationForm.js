@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import useFormField from "../hooks/useFormField";
 import { upsertLocation, getLocation } from "../db";
 import WeekTimePicker from "./WeekTimePicker";
+import CustomSelect from "./CustomSelect";
 
 const useStyles = makeStyles({
   flex: {
@@ -222,8 +223,10 @@ export default ({ history, match }) => {
                 value={city}
                 onChange={setCity}
               />
-              <TextField
+              <CustomSelect
                 label="State"
+                name="state"
+                options={["Rajasthan", "Gujarat", "Maharashtra", "Uttar Pradesh"]}
                 classes={{ root: textField }}
                 value={state}
                 onChange={setState}
@@ -251,8 +254,11 @@ export default ({ history, match }) => {
           </div>
 
           {/* Timezone */}
-          <TextField
+          <CustomSelect
             label="Time Zone"
+            name="timezone"
+            options={["Pacific Standard Time (UTC-08:00)", "GMT Standard Time (UTC+00:00)", "Middle East Standard Time (UTC+02:00)",
+            "India Standard Time (UTC+05:30)"]}
             classes={{ root: textField }}
             value={timezone}
             onChange={setTimezone}
