@@ -3,6 +3,7 @@ import { TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import useFormField from "../../hooks/useFormField";
 import { upsertLocation, getLocation } from "../../db";
+import WeekTimePicker from '../WeekTimePicker/WeekTimePicker';
 
 const useStyles = makeStyles({
   flex: {
@@ -70,8 +71,7 @@ export default ({ history, match }) => {
 
   // Load location details acc. to Id in Url parameter
   useEffect(() => {
-    debugger;
-    getLocation(locationId).then((item) => {
+    (locationId > 0) && getLocation(locationId).then((item) => {
         const { name, address1, address2, suite, city, state, zip, phone, timezone, facility, appointment } = item;
 
         // pass as wrapper of event object
@@ -98,7 +98,8 @@ export default ({ history, match }) => {
     })
   }, [locationId]);
 
-  const [status, setStatus] = useState({ loading: false, error: false });
+  const [status, setStatus] = useState({ loading: false, error: false }),
+        [openFacilityTimePicker, setOpenFacilityTimePicker] = useState(true);
 
   /* Reset calls for all fields */
   const resetAll = () => {
@@ -272,6 +273,8 @@ export default ({ history, match }) => {
           >
             Save
           </Button>
+
+          <WeekTimePicker open={openFacilityTimePicker}/>
         </div>
       </form>
     </Card>
