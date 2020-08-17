@@ -6,8 +6,8 @@ import {
   FormControlLabel,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import TimePicker from '../TimePicker/TimePicker';
-import useFormField from "../../hooks/useFormField";
+import TimePicker from './TimePicker';
+import useFormField from "../hooks/useFormField";
 
 const useStyles = makeStyles({
     formGroupRow: {

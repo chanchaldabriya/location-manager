@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
-import LocationForm from "./components/LocationForm/LocationForm";
+import LocationForm from "./components/LocationForm";
 import { Route, Switch, Redirect } from "react-router-dom";
-import Titlebar from "./components/Titlebar/Titlebar";
-import LocationList from "./components/LocationList/LocationList";
+import Titlebar from "./components/Titlebar";
+import LocationList from "./components/LocationList";
 
 function App() {
   return (
