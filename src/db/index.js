@@ -19,5 +19,7 @@ const getLocation = async (id) => await db.table(LOCATIONS_STORE).get(id);
 
 const getAllLocations = async () => await db.table(LOCATIONS_STORE).toArray();
 
-export { upsertLocation, deleteLocation, getLocation, getAllLocations };
+const getPagedLocations = async (offset=0, count=10) => await db.table(LOCATIONS_STORE).orderBy('id').offset(offset).limit(count).toArray();
+
+export { upsertLocation, deleteLocation, getLocation, getAllLocations, getPagedLocations };
 export default db;

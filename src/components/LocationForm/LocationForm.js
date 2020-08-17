@@ -3,7 +3,7 @@ import { TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import useFormField from "../../hooks/useFormField";
 import { upsertLocation, getLocation } from "../../db";
-import WeekTimePicker from '../WeekTimePicker/WeekTimePicker';
+import WeekTimePicker from "../WeekTimePicker/WeekTimePicker";
 
 const useStyles = makeStyles({
   flex: {
@@ -69,37 +69,58 @@ export default ({ history, match }) => {
     [facility, setFacility, resetFacility] = useFormField(""),
     [appointment, setAppointment, resetAppointment] = useFormField("");
 
+  const setAll = ({
+    name,
+    address1,
+    address2,
+    suite,
+    city,
+    state,
+    zip,
+    phone,
+    timezone,
+    facility,
+    appointment,
+  }) => {
+    // pass as wrapper of event object
+    const asEventObj = (val) => ({
+      target: {
+        value: val,
+      },
+    });
+
+    // Set all fetched values to state
+    setName(asEventObj(name));
+    setAddress1(asEventObj(address1));
+    setAddress2(asEventObj(address2));
+    setSuite(asEventObj(suite));
+    setCity(asEventObj(city));
+    setState(asEventObj(state));
+    setZip(asEventObj(zip));
+    setPhone(asEventObj(phone));
+    setTimezone(asEventObj(timezone));
+    setFacility(asEventObj(facility));
+    setAppointment(asEventObj(appointment));
+  };
+
   // Load location details acc. to Id in Url parameter
   useEffect(() => {
-    (locationId > 0) && getLocation(locationId).then((item) => {
-        const { name, address1, address2, suite, city, state, zip, phone, timezone, facility, appointment } = item;
-
-        // pass as wrapper of event object
-        const asEventObj = (val) => ({
-            target: { 
-                value: val
-            }
+    locationId > 0 &&
+      getLocation(locationId)
+        .then((item) => {
+          // Set all fetched values to state
+          setAll(item);
+        })
+        .catch((error) => {
+          console.error(
+            "Error loading location from DB with ID: " + locationId,
+            error
+          );
         });
-
-        // Set all fetched values to state
-        setName(asEventObj(name));
-        setAddress1(asEventObj(address1));
-        setAddress2(asEventObj(address2));
-        setSuite(asEventObj(suite));
-        setCity(asEventObj(city));
-        setState(asEventObj(state));
-        setZip(asEventObj(zip));
-        setPhone(asEventObj(phone));
-        setTimezone(asEventObj(timezone));
-        setFacility(asEventObj(facility));
-        setAppointment(asEventObj(appointment));
-    }).catch(error => {
-        console.error("Error loading location from DB with ID: " + locationId, error);
-    })
   }, [locationId]);
 
   const [status, setStatus] = useState({ loading: false, error: false }),
-        [openFacilityTimePicker, setOpenFacilityTimePicker] = useState(true);
+    [openFacilityTimePicker, setOpenFacilityTimePicker] = useState(false);
 
   /* Reset calls for all fields */
   const resetAll = () => {
@@ -120,22 +141,21 @@ export default ({ history, match }) => {
     setStatus({ loading: true, error: false });
 
     let objToSave = {
-        name,
-        address1,
-        address2,
-        suite,
-        city,
-        state,
-        zip,
-        phone,
-        timezone,
-        facility,
-        appointment,
+      name,
+      address1,
+      address2,
+      suite,
+      city,
+      state,
+      zip,
+      phone,
+      timezone,
+      facility,
+      appointment,
     };
-    
+
     // In case of edit, id also needs to be passed
-    if(locationId > 0)
-        objToSave.id = locationId;
+    if (locationId > 0) objToSave.id = locationId;
 
     upsertLocation(objToSave)
       .then((resp) => {
@@ -274,7 +294,7 @@ export default ({ history, match }) => {
             Save
           </Button>
 
-          <WeekTimePicker open={openFacilityTimePicker}/>
+          <WeekTimePicker open={openFacilityTimePicker} />
         </div>
       </form>
     </Card>

@@ -41,7 +41,7 @@ const useStyles = makeStyles({
   /* /ListItem styling*/
 });
 
-export default ({ isHeading, index, deleteItem, editItem, children, ...locationObj }) => {
+export default ({ isContainer=true, isHeading, index, deleteItem, editItem, children, ...locationObj }) => {
   const classes = useStyles();
   const {
     id,
@@ -67,11 +67,17 @@ export default ({ isHeading, index, deleteItem, editItem, children, ...locationO
     );
   };
 
-  return isHeading ? (
+  return isContainer ? (
     <ListItem
       classes={{ root: classes.listItem }}
       className={classes.heading}
-      button
+    >
+      {children}
+    </ListItem>
+    ) : isHeading ? (
+    <ListItem
+      classes={{ root: classes.listItem }}
+      className={classes.heading}
     >
       <Avatar
         component="div"
@@ -129,7 +135,6 @@ export default ({ isHeading, index, deleteItem, editItem, children, ...locationO
           <Delete color="secondary" />
         </IconButton>
       </div>
-      {/* {children} */}
     </ListItem>
   );
 };
