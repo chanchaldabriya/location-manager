@@ -249,6 +249,10 @@ export default ({ history, match }) => {
               classes={{ root: textField }}
               value={zip}
               onChange={setZip}
+              inputProps={{ minLength: 5, maxLength: 10 }}
+              onInput = {(e) => {
+                e.target.value = e.target.value.trim()
+              }}
             />
             <MuiPhoneNumber 
               defaultCountry={'us'}
