@@ -1,32 +1,34 @@
-import React, { useState } from "react";
+import React from "react";
 import { TextField, FormGroup } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   timePicker: {
-    marginRight: 16, 
+    marginRight: 16
   },
   timeField: {
     marginRight: 8
+  },
+  selectedToggleBtn: {
+    backgroundColor: "#3f51b5 !important",
+    color: "white !important"
   }
 });
 
 export default ({ time, meridian, setTime, setMeridian }) => {
-  const classes = useStyles(); 
+  const { timePicker, timeField, selectedToggleBtn } = useStyles(); 
 
-  const handleMeridianChange = (event, newValue) => {
-    setMeridian(newValue);
-  };
+  const handleMeridianChange = (event, newValue) => setMeridian(newValue);
 
   return (
-    <FormGroup row classes={{ root: classes.timePicker }}>
+    <FormGroup row classes={{ root: timePicker }}>
       <TextField
         variant="outlined"
         size="small"
         value={time}
         onChange={setTime}
-        classes={{root: classes.timeField}}
+        classes={{root: timeField}}
         inputProps={{
           step: 300, // 5 min
         }}
@@ -38,10 +40,10 @@ export default ({ time, meridian, setTime, setMeridian }) => {
         onChange={handleMeridianChange}
         exclusive
       >
-        <ToggleButton value="am" size="small">
+        <ToggleButton value="am" size="small" classes={{selected: selectedToggleBtn}}>
           AM
         </ToggleButton>
-        <ToggleButton value="pm" size="small">
+        <ToggleButton value="pm" size="small" classes={{selected: selectedToggleBtn}}>
           PM
         </ToggleButton>
       </ToggleButtonGroup>

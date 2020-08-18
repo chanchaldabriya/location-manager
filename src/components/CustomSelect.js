@@ -1,8 +1,5 @@
 import React from "react";
 import { FormControl, InputLabel, NativeSelect } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles({});
 
 export default ({ label, name, options, value, onChange, classes }) => {
   return (

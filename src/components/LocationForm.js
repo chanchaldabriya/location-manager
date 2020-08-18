@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MuiPhoneNumber from "material-ui-phone-number";
@@ -68,7 +68,7 @@ export default ({ history, match }) => {
     [zip, setZip, resetZip] = useFormField(""),
     [phone, setPhone] = useState(""),
     [timezone, setTimezone, resetTimezone] = useFormField(""),
-    [facility, setFacility, resetFacility] = useFormField(""),
+    [facility, setFacility] = useState(""),
     [appointment, setAppointment, resetAppointment] = useFormField("");
 
   const setAll = ({
@@ -100,11 +100,11 @@ export default ({ history, match }) => {
     setState(asEventObj(state));
     setZip(asEventObj(zip));
     setTimezone(asEventObj(timezone));
-    setFacility(asEventObj(facility));
     setAppointment(asEventObj(appointment));
 
     // Not as event
     setPhone(phone);
+    setFacility(facility);
   };
 
   // Load location details acc. to Id in Url parameter
@@ -136,11 +136,11 @@ export default ({ history, match }) => {
     resetState();
     resetZip();
     resetTimezone();
-    resetFacility();
     resetAppointment();
 
     // Explicitly re-setting phone
     setPhone("");
+    setFacility("");
   };
 
   const save = () => {
@@ -175,6 +175,8 @@ export default ({ history, match }) => {
         setStatus({ loading: false, error: true });
       });
   };
+
+  const facilityFieldRef = useRef(null);
 
   return (
     <Card raised classes={{ root: card }}>
@@ -231,7 +233,12 @@ export default ({ history, match }) => {
               <CustomSelect
                 label="State"
                 name="state"
-                options={["Rajasthan", "Gujarat", "Maharashtra", "Uttar Pradesh"]}
+                options={[
+                  "Rajasthan",
+                  "Gujarat",
+                  "Maharashtra",
+                  "Uttar Pradesh",
+                ]}
                 classes={{ root: textField }}
                 value={state}
                 onChange={setState}
@@ -250,12 +257,12 @@ export default ({ history, match }) => {
               value={zip}
               onChange={setZip}
               inputProps={{ minLength: 5, maxLength: 10 }}
-              onInput = {(e) => {
-                e.target.value = e.target.value.trim()
+              onInput={(e) => {
+                e.target.value = e.target.value.trim();
               }}
             />
-            <MuiPhoneNumber 
-              defaultCountry={'us'}
+            <MuiPhoneNumber
+              defaultCountry={"us"}
               label="Phone Number"
               className={textField}
               value={phone}
@@ -267,8 +274,12 @@ export default ({ history, match }) => {
           <CustomSelect
             label="Time Zone"
             name="timezone"
-            options={["Pacific Standard Time (UTC-08:00)", "GMT Standard Time (UTC+00:00)", "Middle East Standard Time (UTC+02:00)",
-            "India Standard Time (UTC+05:30)"]}
+            options={[
+              "Pacific Standard Time (UTC-08:00)",
+              "GMT Standard Time (UTC+00:00)",
+              "Middle East Standard Time (UTC+02:00)",
+              "India Standard Time (UTC+05:30)",
+            ]}
             classes={{ root: textField }}
             value={timezone}
             onChange={setTimezone}
@@ -282,6 +293,8 @@ export default ({ history, match }) => {
             classes={{ root: textField }}
             value={facility}
             onChange={setFacility}
+            inputRef={facilityFieldRef}
+            onFocus={() => { setOpenFacilityTimePicker(true); facilityFieldRef.current.blur(); }}
           />
           <TextField
             label="Appointment Pool"
@@ -310,7 +323,11 @@ export default ({ history, match }) => {
             Save
           </Button>
 
-          <WeekTimePicker open={openFacilityTimePicker} />
+          <WeekTimePicker
+            open={openFacilityTimePicker}
+            setValue={setFacility}
+            close={() => setOpenFacilityTimePicker(false)}
+          />
         </div>
       </form>
     </Card>
