@@ -34,35 +34,44 @@ export default class WeekTimePicker extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if(prevProps.value !== this.props.value) {
-        this.parseValue(this.props.value);
+    if (prevProps.value !== this.props.value) {
+      this.parseValue(this.props.value);
     }
   }
 
   parseValue = (value) => {
-    value && value.trim().split(',').map(dayStr => {
-        let [day, timeStr] = dayStr.split(' ');
-        let [startTime, startMeridian, endTime, endMeridian] = this.parseTimeRange(timeStr);
+    value &&
+      value
+        .trim()
+        .split(",")
+        .map((dayStr) => {
+          let [day, timeStr] = dayStr.split(" ");
+          let [
+            startTime,
+            startMeridian,
+            endTime,
+            endMeridian,
+          ] = this.parseTimeRange(timeStr);
 
-        this.setState({
+          this.setState({
             [days.indexOf(day)]: {
-                day,
-                startTime, 
-                startMeridian, 
-                endTime, 
-                endMeridian
-            }
-        })
-    });
+              day,
+              startTime,
+              startMeridian,
+              endTime,
+              endMeridian,
+            },
+          });
+        });
   };
 
   parseTimeRange = (time) => {
-    let [start, end] = time && time.split('-');
+    let [start, end] = time && time.split("-");
     let [startTime, startMeridian] = this.parseTime(start);
     let [endTime, endMeridian] = this.parseTime(end);
 
     return [startTime, startMeridian, endTime, endMeridian];
-  }
+  };
 
   parseTime = (timeStr) => {
     let meridian = timeStr && timeStr.slice(-2);
@@ -70,7 +79,7 @@ export default class WeekTimePicker extends React.Component {
     let time = meridian ? timeStr.slice(0, timeStr.indexOf(meridian)) : "";
 
     return [time, meridian];
-  }
+  };
 
   getValue = () =>
     Object.values(this.state)

@@ -53,10 +53,7 @@ export default ({ isContainer=true, isHeading, index, deleteItem, editItem, chil
     state,
     suite,
     phone,
-    timezone,
     zip,
-    appointment,
-    facility,
   } = locationObj;
 
   const getFormattedAddress = () => {
