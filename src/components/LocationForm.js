@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Autocomplete } from "@material-ui/lab";
 import MuiPhoneNumber from "material-ui-phone-number";
 import useFormField from "../hooks/useFormField";
 import { upsertLocation, getLocation } from "../db";
@@ -69,7 +70,7 @@ export default ({ history, match }) => {
     [phone, setPhone] = useState(""),
     [timezone, setTimezone, resetTimezone] = useFormField(""),
     [facility, setFacility] = useState(""),
-    [appointment, setAppointment, resetAppointment] = useFormField("");
+    [appointment, setAppointment] = useState([]);
 
   const setAll = ({
     name,
@@ -100,18 +101,18 @@ export default ({ history, match }) => {
     setState(asEventObj(state));
     setZip(asEventObj(zip));
     setTimezone(asEventObj(timezone));
-    setAppointment(asEventObj(appointment));
 
     // Not as event
     setPhone(phone);
     setFacility(facility);
+    setAppointment(appointment);
   };
 
   // Load location details acc. to Id in Url parameter
   useEffect(() => {
     // First reset form
     resetAll();
-    
+
     locationId > 0 &&
       getLocation(locationId)
         .then((item) => {
@@ -139,11 +140,11 @@ export default ({ history, match }) => {
     resetState();
     resetZip();
     resetTimezone();
-    resetAppointment();
 
-    // Explicitly re-setting phone
+    // Explicitly re-setting
     setPhone("");
     setFacility("");
+    setAppointment([]);
   };
 
   const save = () => {
@@ -184,7 +185,9 @@ export default ({ history, match }) => {
   return (
     <Card raised classes={{ root: card }}>
       <form className={form}>
-        <h3 className={formHeading}>{locationId > 0 ? "Edit" : "Add"} Location</h3>
+        <h3 className={formHeading}>
+          {locationId > 0 ? "Edit" : "Add"} Location
+        </h3>
         <div className={flex}>
           <TextField
             required
@@ -297,13 +300,26 @@ export default ({ history, match }) => {
             value={facility}
             onChange={setFacility}
             inputRef={facilityFieldRef}
-            onFocus={() => { setOpenFacilityTimePicker(true); facilityFieldRef.current.blur(); }}
+            onFocus={() => {
+              setOpenFacilityTimePicker(true);
+              facilityFieldRef.current.blur();
+            }}
           />
-          <TextField
-            label="Appointment Pool"
+
+          {/* Appointment Pool */}
+          <Autocomplete
+            multiple
+            options={["A", "B", "C", "D"]}
             classes={{ root: textField }}
             value={appointment}
-            onChange={setAppointment}
+            onChange={(event, value) => setAppointment(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                label="Appointment Pool"
+              />
+            )}
           />
         </div>
 
