@@ -182,6 +182,7 @@ export default ({ history, match }) => {
   };
 
   const facilityFieldRef = useRef(null);
+  const hasError = name.trim().length === 0;
 
   return (
     <Card raised classes={{ root: card }}>
@@ -191,8 +192,10 @@ export default ({ history, match }) => {
         </h3>
         <div className={flex}>
           <TextField
+            error={name.trim().length === 0}
             required
             label="Location Name"
+            helperText="Required field"
             classes={{ root: textField }}
             value={name}
             onChange={setName}
@@ -339,6 +342,7 @@ export default ({ history, match }) => {
             variant="contained"
             classes={{ root: btn }}
             onClick={save}
+            disabled={hasError}
           >
             Save
           </Button>
