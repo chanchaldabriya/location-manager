@@ -109,6 +109,9 @@ export default ({ history, match }) => {
 
   // Load location details acc. to Id in Url parameter
   useEffect(() => {
+    // First reset form
+    resetAll();
+    
     locationId > 0 &&
       getLocation(locationId)
         .then((item) => {
@@ -181,7 +184,7 @@ export default ({ history, match }) => {
   return (
     <Card raised classes={{ root: card }}>
       <form className={form}>
-        <h3 className={formHeading}>Add Location</h3>
+        <h3 className={formHeading}>{locationId > 0 ? "Edit" : "Add"} Location</h3>
         <div className={flex}>
           <TextField
             required
@@ -327,6 +330,7 @@ export default ({ history, match }) => {
             open={openFacilityTimePicker}
             setValue={setFacility}
             close={() => setOpenFacilityTimePicker(false)}
+            value={facility}
           />
         </div>
       </form>
