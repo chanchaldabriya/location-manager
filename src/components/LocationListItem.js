@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     color: "#888",
   },
   avatar: {
-    backgroundColor: "#0084cc",
+    backgroundColor: "#3f51b5",
     color: "white",
     fontSize: "1.1rem",
     fontWeight: "bold",

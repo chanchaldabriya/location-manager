@@ -7,6 +7,7 @@ import useFormField from "../hooks/useFormField";
 import { upsertLocation, getLocation } from "../db";
 import WeekTimePicker from "./WeekTimePicker";
 import CustomSelect from "./CustomSelect";
+import LoadingWithError from "./LoadingWithError";
 
 const useStyles = makeStyles({
   flex: {
@@ -127,7 +128,7 @@ export default ({ history, match }) => {
         });
   }, [locationId]);
 
-  const [status, setStatus] = useState({ loading: false, error: false }),
+  const [status, setStatus] = useState({ loading: false, error: "" }),
     [openFacilityTimePicker, setOpenFacilityTimePicker] = useState(false);
 
   /* Reset calls for all fields */
@@ -148,7 +149,7 @@ export default ({ history, match }) => {
   };
 
   const save = () => {
-    setStatus({ loading: true, error: false });
+    setStatus({ loading: true, error: "" });
 
     let objToSave = {
       name,
@@ -170,13 +171,13 @@ export default ({ history, match }) => {
     upsertLocation(objToSave)
       .then((resp) => {
         console.log(resp);
-        setStatus({ loading: false, error: false });
+        setStatus({ loading: false, error: "" });
         resetAll();
         history.push("/");
       })
       .catch((error) => {
         console.error(error);
-        setStatus({ loading: false, error: true });
+        setStatus({ loading: false, error: error });
       });
   };
 
@@ -350,6 +351,7 @@ export default ({ history, match }) => {
           />
         </div>
       </form>
+      <LoadingWithError loading={status.loading} error={status.error} close={() => setStatus({ loading: false, error: "" })}/>
     </Card>
   );
 };

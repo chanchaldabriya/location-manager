@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import LocationListItem from "./LocationListItem";
 import { deleteLocation, getPagedLocations, getAllLocations } from "../db";
 import EmptyListPlaceholder from "./EmptyListPlaceholder";
+import LoadingWithError from "./LoadingWithError";
 
 const useStyles = makeStyles({
   /* ListItem styling*/
@@ -11,16 +12,16 @@ const useStyles = makeStyles({
     padding: 10,
   },
   pagination: {
-    color: '#888',
-    margin: 'auto'
-  }
+    color: "#888",
+    margin: "auto",
+  },
   /* /ListItem styling*/
 });
 
 export default ({ history }) => {
   const classes = useStyles();
   const [items, setItems] = useState([]);
-  const [status, setStatus] = useState({ loading: false, error: false });
+  const [status, setStatus] = useState({ loading: false, error: "" });
   const isEmpty = items && items.length === 0;
 
   const [totalItems, setTotalItems] = useState(0);
@@ -31,24 +32,26 @@ export default ({ history }) => {
 
   // get total items at the start for pagination component
   useEffect(() => {
-    getAllLocations().then(items => {
-      items && setTotalItems(items.length);
-    }).catch(error => {
-      console.error("Error loading all items", error);
-    })
+    getAllLocations()
+      .then((items) => {
+        items && setTotalItems(items.length);
+      })
+      .catch((error) => {
+        console.error("Error loading all items", error);
+      });
   }, []);
 
   useEffect(() => {
-    setStatus({ loading: true, error: false });
+    setStatus({ loading: true, error: "" });
 
-    getPagedLocations((page) * itemsPerPage, itemsPerPage)
+    getPagedLocations(page * itemsPerPage, itemsPerPage)
       .then((items) => {
         setItems(items);
-        setStatus({ loading: false, error: false });
+        setStatus({ loading: false, error: "" });
       })
       .catch((error) => {
-        setStatus({ loading: false, error: true });
-        console.error("Error loading page: "+ page, error);
+        setStatus({ loading: false, error: error });
+        console.error("Error loading page: " + page, error);
       });
   }, [page, itemsPerPage]);
 
@@ -71,32 +74,35 @@ export default ({ history }) => {
   return !items || isEmpty ? (
     <EmptyListPlaceholder />
   ) : (
-    <List classes={{ root: classes.list }}>
-      <LocationListItem isHeading isContainer={false} />
-      {items.map((item, index) => (
-        <LocationListItem
-          key={item.id}
-          index={index + 1 + (page * itemsPerPage)}
-          deleteItem={deleteItem}
-          editItem={editItem}
-          isContainer={false}
-          {...item}
+    <React.Fragment>
+      <List classes={{ root: classes.list }}>
+        <LocationListItem isHeading isContainer={false} />
+        {items.map((item, index) => (
+          <LocationListItem
+            key={item.id}
+            index={index + 1 + page * itemsPerPage}
+            deleteItem={deleteItem}
+            editItem={editItem}
+            isContainer={false}
+            {...item}
+          />
+        ))}
+        <TablePagination
+          count={totalItems}
+          page={page}
+          component={LocationListItem}
+          rowsPerPage={itemsPerPage}
+          rowsPerPageOptions={[5, 10, 15, 20, 25, 30]}
+          classes={{ toolbar: classes.pagination }}
+          labelRowsPerPage="Items per page:"
+          onChangePage={(event, newValue) => setPage(newValue)}
+          onChangeRowsPerPage={(event) => {
+            setItemsPerPage(parseInt(event.target.value));
+            setPage(0);
+          }}
         />
-      ))}
-      <TablePagination
-        count={totalItems}
-        page={page}
-        component={LocationListItem}
-        rowsPerPage={itemsPerPage}
-        rowsPerPageOptions={[5,10,15,20,25,30]}
-        classes={{toolbar: classes.pagination}}
-        labelRowsPerPage="Items per page:"
-        onChangePage={(event, newValue) => setPage(newValue)}
-        onChangeRowsPerPage={(event) => {
-          setItemsPerPage(parseInt(event.target.value));
-          setPage(0);
-        }}
-      />
-    </List>
+      </List>
+      <LoadingWithError loading={status.loading} error={status.error} close={() => setStatus({ loading: false, error: "" })} />
+    </React.Fragment>
   );
 };
